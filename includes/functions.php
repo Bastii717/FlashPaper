@@ -109,13 +109,10 @@
 			throw new Exception('Failed to write to database!');
 		}
 
-		$verify = $db->prepare('SELECT COUNT(*) FROM "secrets" WHERE id = :id');
-		$verify->bindValue(':id', $id);
-		if ( ! $verify->execute() ) {
-			throw new Exception('Failed to read from database!');
-		} else {
-			return ( $verify->fetchColumn() == 0 );
-		}
+		# true only if this request deleted the row itself. a concurrent
+		# request for the same id sees 0 affected rows and must not
+		# reveal the secret
+		return ( $statement->rowCount() === 1 );
 	}
 
 	function secretCleanup($db) {
@@ -206,15 +203,15 @@
 			throw new Exception('This secret can not be found!');
 		}
 
+		#claim the secret by deleting it before decrypting. only the request
+		#that deleted the row may reveal it
+		if ( ! deleteSecret($db, $id) ) {
+			throw new Exception('This secret can not be found!');
+		}
+
 		#decrypt secret with the static key, and then with url key
 		$secret = encrypt_decrypt(false, getStaticKey(), $iv, $secret);
 		$secret = encrypt_decrypt(false, $key, $iv, $secret);
-
-		#delete secret and verify it's gone
-		if ( ! deleteSecret($db, $id) ) {
-			# if we cant destroy it, dont give the secret out
-			throw new Exception('Failed to destroy secret!');
-		}
 
 		#close db
 		$db = null;
