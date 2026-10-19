@@ -9,7 +9,7 @@ nginx -c /etc/nginx/nginx.conf
 # Ready to serve?
 for i in 1 2 3; do
   echo "Checking to see if FlashPaper is ready. ($i of 3)"
-  curl -sm3 localhost | grep -q "AndrewPaglusch/FlashPaper"
+  curl -sm3 localhost | grep -q "Bastii717/FlashPaper"
   if [[ $? -eq 0 ]]; then
     echo "FlashPaper is ready."
     break
