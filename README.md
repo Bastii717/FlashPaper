@@ -10,7 +10,7 @@ A one-time encrypted zero-knowledge password/secret sharing application focused 
 ## Installation
 
 ### Docker *(Recommended)*
-  Images for this fork are published at [`ghcr.io/bastii717/flashpaper`](https://ghcr.io/bastii717/flashpaper) starting with the first tagged release of this fork.
+  Images for this fork are published at [`ghcr.io/bastii717/flashpaper`](https://ghcr.io/bastii717/flashpaper).
   1. Download [docker-compose.yml](https://raw.githubusercontent.com/Bastii717/FlashPaper/master/docker-compose.yml) from this repo
   2. Edit `docker-compose.yml` with your customizations
   3. Run `docker compose up -d` to start FlashPaper
