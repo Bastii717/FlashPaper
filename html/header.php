@@ -5,7 +5,7 @@
 		<!--
 		######################################################################################
 		# Copyright (c) 2017-<?php echo date("Y"); ?> Andrew Paglusch                                            #
-		# https://raw.githubusercontent.com/AndrewPaglusch/FlashPaper/master/LICENSE         #
+		# https://raw.githubusercontent.com/Bastii717/FlashPaper/master/LICENSE              #
 		######################################################################################
 		-->
 		<title><?php echo $settings['site_title'] ?></title>
