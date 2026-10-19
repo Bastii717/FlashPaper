@@ -5,6 +5,11 @@ A one-time encrypted zero-knowledge password/secret sharing application focused 
 
 > **About this fork:** This is an actively maintained fork of [AndrewPaglusch/FlashPaper](https://github.com/AndrewPaglusch/FlashPaper). All credit for the concept, design, and original implementation goes to [Andrew Paglusch](https://github.com/AndrewPaglusch) — this fork exists to keep the project patched and its base images current, not to replace it. See [Acknowledgments](#acknowledgments).
 
+## Demo
+
+- https://secret.bcdc.app
+- https://secret.pwneytelecom.com
+
 ![Picture of Main Page](readme-screenshot-dark.png)
 
 ## Installation
