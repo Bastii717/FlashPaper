@@ -14,7 +14,7 @@ services:
       DISPLAY_LOGO: "true"
       DISPLAY_TITLE: "false"
       RETURN_FULL_URL: "true"
-      BASE_URL: "" # https://mydomain.com/flashpaper
+      BASE_URL: "" # https://example.com/flashpaper
       MAX_SECRET_LENGTH: "3000"
       ANNOUNCEMENT: ""
       MESSAGES_ERROR_SECRET_TOO_LONG: "Input length too long"
