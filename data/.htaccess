@@ -1,0 +1,3 @@
+# The sqlite database and the static encryption key live in this
+# directory. It must never be served over HTTP (Apache 2.4+).
+Require all denied

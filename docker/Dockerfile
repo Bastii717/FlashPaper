@@ -1,11 +1,11 @@
-FROM alpine:3.20.3
+FROM alpine:3.24.2
 
-RUN apk add --no-cache curl nginx php83 php83-fpm php83-opcache php83-pdo php83-pdo_sqlite php83-openssl && \
+RUN apk add --no-cache curl nginx php84 php84-fpm php84-opcache php84-pdo php84-pdo_sqlite php84-openssl && \
     mkdir /var/www/html
 
 COPY . /var/www/html
 
-COPY docker/php-fpm.conf /etc/php83/php-fpm.conf
+COPY docker/php-fpm.conf /etc/php84/php-fpm.conf
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 COPY docker/settings.php /var/www/html/settings.php
