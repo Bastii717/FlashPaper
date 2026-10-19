@@ -7,7 +7,7 @@
 		'display_logo' => 'true', # true/false
 		'display_title' => 'false', # true/false  
 		'return_full_url' => true,
-		'base_url' => '', # https://mydomain.com/flashpaper
+		'base_url' => '', # https://example.com/flashpaper
 		'max_secret_length' => 3000,
 		'announcement' => '',
 		'prune' => [
