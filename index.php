@@ -4,6 +4,13 @@
 	require_once("settings.php"); # load settings
 	require_once("includes/functions.php"); # load functions
 
+	# request parameters are only ever used as strings. drop anything else
+	# (e.g. ?k[]=x arrays) before it reaches string functions
+	if ( isset($_GET['k']) && ! is_string($_GET['k']) ) { unset($_GET['k']); }
+	if ( isset($_GET['t']) && ! is_string($_GET['t']) ) { unset($_GET['t']); }
+	if ( isset($_POST['k']) && ! is_string($_POST['k']) ) { unset($_POST['k']); }
+	if ( isset($_POST['secret']) && ! is_string($_POST['secret']) ) { unset($_POST['secret']); }
+
 	# display secret retrieval url in json format if requested
 	if (isset($_POST['json']) && !empty($_POST['secret'])) {
 		header("Content-Type: application/json");
