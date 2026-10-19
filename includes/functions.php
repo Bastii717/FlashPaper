@@ -44,31 +44,47 @@
 	}
 
 	function getStaticKey() {
-		$keyName = "aes-static.key";
-		$results = glob("./data/*--{$keyName}");
-		$staticKey = null;
+		$keyBaseName = "aes-static.key";
+		$results = glob("./data/*--{$keyBaseName}");
 
-		if ( count($results) != 1 ) {
-			#static key needs to be created
-			$prefix = crypto_rand_string(32);
-			$keyName = "./data/{$prefix}--{$keyName}";
-			$staticKey = random_bytes(32);
-
-			if ( $fp = fopen($keyName, "w") ) {
-				fwrite($fp, $staticKey);
-				fclose($fp);
-			} else {
+		if ( count($results) < 1 ) {
+			#serialize key creation so concurrent first requests don't
+			#create competing keys
+			$lock = fopen("./data/.{$keyBaseName}.lock", "c");
+			if ( $lock === false || ! flock($lock, LOCK_EX) ) {
 				throw new Exception('Failed to write static key to disk!');
 			}
-		} else {
-			#read static key from disk
-			$keyName = $results[0];
-			if ( ($fp = fopen($keyName, "rb")) !== false ) {
-				$staticKey = stream_get_contents($fp);
-				fclose($fp);
-			} else {
-				throw new Exception('Unable to read static key from disk!');
+
+			#another request may have created the key while we waited
+			$results = glob("./data/*--{$keyBaseName}");
+			if ( count($results) < 1 ) {
+				$keyName = "./data/" . crypto_rand_string(32) . "--{$keyBaseName}";
+				$staticKey = random_bytes(32);
+
+				#write to a temp file and rename so a reader never sees a
+				#partial key. .tmp suffix keeps it out of the glob above
+				$tmpName = "{$keyName}.tmp";
+				if ( file_put_contents($tmpName, $staticKey) !== 32
+					|| ! chmod($tmpName, 0600)
+					|| ! rename($tmpName, $keyName) ) {
+					@unlink($tmpName);
+					flock($lock, LOCK_UN);
+					fclose($lock);
+					throw new Exception('Failed to write static key to disk!');
+				}
+				$results = [$keyName];
 			}
+
+			flock($lock, LOCK_UN);
+			fclose($lock);
+		}
+
+		#if multiple key files ever exist (e.g. volume jitter, see 5ff41cb for
+		#the same bug with the sqlite db), glob's sorted output makes this
+		#pick deterministic instead of generating yet another key
+		$staticKey = file_get_contents($results[0]);
+		if ( $staticKey === false ) {
+			throw new Exception('Unable to read static key from disk!');
 		}
 
 		if ( strlen($staticKey) >= 32 ) {
@@ -109,13 +125,10 @@
 			throw new Exception('Failed to write to database!');
 		}
 
-		$verify = $db->prepare('SELECT COUNT(*) FROM "secrets" WHERE id = :id');
-		$verify->bindValue(':id', $id);
-		if ( ! $verify->execute() ) {
-			throw new Exception('Failed to read from database!');
-		} else {
-			return ( $verify->fetchColumn() == 0 );
-		}
+		# true only if this request deleted the row itself. a concurrent
+		# request for the same id sees 0 affected rows and must not
+		# reveal the secret
+		return ( $statement->rowCount() === 1 );
 	}
 
 	function secretCleanup($db) {
@@ -206,15 +219,15 @@
 			throw new Exception('This secret can not be found!');
 		}
 
+		#claim the secret by deleting it before decrypting. only the request
+		#that deleted the row may reveal it
+		if ( ! deleteSecret($db, $id) ) {
+			throw new Exception('This secret can not be found!');
+		}
+
 		#decrypt secret with the static key, and then with url key
 		$secret = encrypt_decrypt(false, getStaticKey(), $iv, $secret);
 		$secret = encrypt_decrypt(false, $key, $iv, $secret);
-
-		#delete secret and verify it's gone
-		if ( ! deleteSecret($db, $id) ) {
-			# if we cant destroy it, dont give the secret out
-			throw new Exception('Failed to destroy secret!');
-		}
 
 		#close db
 		$db = null;
