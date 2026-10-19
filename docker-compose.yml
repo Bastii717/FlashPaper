@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   flashpaper:
-    image: ghcr.io/andrewpaglusch/flashpaper:v2
+    image: ghcr.io/bastii717/flashpaper:v2
     container_name: flashpaper
     restart: always
     volumes:
