@@ -21,6 +21,15 @@ A one-time encrypted zero-knowledge password/secret sharing application focused 
   3. Run `docker compose up -d` to start FlashPaper
   4. Set up a reverse proxy in front of FlashPaper that terminates SSL/TLS (see [Operating behind a reverse proxy](#operating-behind-a-reverse-proxy))
 
+#### Verifying Image Signatures
+  Images are signed keylessly with [cosign](https://github.com/sigstore/cosign) using the publishing workflow's GitHub OIDC identity; every signature is recorded in the public Rekor transparency log. To verify that an image was built by this repository's workflow:
+
+  ```
+  cosign verify ghcr.io/bastii717/flashpaper:v2 \
+    --certificate-identity-regexp 'https://github.com/Bastii717/FlashPaper/\.github/workflows/docker_publish\.yml@.*' \
+    --certificate-oidc-issuer https://token.actions.githubusercontent.com
+  ```
+
 #### Building an Image
   You can build your own image using the provided Dockerfile in the `docker/` folder.
 
