@@ -12,6 +12,11 @@ on:
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ "master" ]
+  # Rebuild weekly so the image picks up Alpine package updates (e.g. PHP
+  # security releases) even when nothing in this repository changed.
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -52,11 +57,17 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # Scheduled and manual builds run on the default branch and carry
+          # no tag ref, so the semver tags never match there. Re-tag v2/latest
+          # explicitly so the tags users pull (docker-compose.yml uses :v2)
+          # also receive the rebuilt image.
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern=v{{major}}
+            type=raw,value=v2,enable={{is_default_branch}}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0

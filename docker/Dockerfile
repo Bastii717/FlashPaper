@@ -3,6 +3,11 @@ FROM alpine:3.24.2
 RUN apk add --no-cache curl nginx php84 php84-fpm php84-opcache php84-pdo php84-pdo_sqlite php84-openssl && \
     mkdir /var/www/html
 
+# PHP2Shell (CVE-2026-109618, CVE-2026-109619): php-fpm RCE fixed in PHP 8.4.27.
+# php84 is deliberately not pinned so future Alpine fixes are picked up
+# automatically; this guard only refuses to build a known-vulnerable image.
+RUN php84 -r 'exit(version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 1);'
+
 COPY . /var/www/html
 
 COPY docker/php-fpm.conf /etc/php84/php-fpm.conf
