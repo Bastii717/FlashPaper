@@ -1,6 +1,10 @@
-FROM alpine:3.24.2
+FROM alpine:3.24.3
 
-RUN apk add --no-cache curl nginx php84 php84-fpm php84-opcache php84-pdo php84-pdo_sqlite php84-openssl && \
+# apk upgrade first: the alpine base layer ships whatever package versions
+# existed at tag time, so without it the weekly rebuilds never pick up fixes
+# for base packages (musl, zlib, openssl, ca-certificates).
+RUN apk upgrade --no-cache && \
+    apk add --no-cache curl nginx php84 php84-fpm php84-opcache php84-pdo php84-pdo_sqlite php84-openssl && \
     mkdir /var/www/html
 
 # PHP2Shell (CVE-2026-109618, CVE-2026-109619): php-fpm RCE fixed in PHP 8.4.27.
