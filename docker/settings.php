@@ -10,6 +10,7 @@
 		"base_url" => getenv('BASE_URL') ?: "",
 		"max_secret_length" => (int)(getenv('MAX_SECRET_LENGTH') ?: 3000),
 		"announcement" => getenv('ANNOUNCEMENT') ?: "",
+		"commit" => getenv('FLASHPAPER_COMMIT') ?: "", # git commit the image was built from, shown in the footer
 		'prune' => [
 			'enabled' => filter_var(getenv('PRUNE_ENABLED') ?: "true", FILTER_VALIDATE_BOOLEAN),
 			'min_days' => (int)(getenv('PRUNE_MIN_DAYS') ?: 365),

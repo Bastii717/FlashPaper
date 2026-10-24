@@ -12,6 +12,11 @@ RUN apk upgrade --no-cache && \
 # automatically; this guard only refuses to build a known-vulnerable image.
 RUN php84 -r 'exit(version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 1);'
 
+# commit the image was built from, passed by the publishing workflow and
+# shown in the page footer. empty for local builds without the build-arg
+ARG FLASHPAPER_COMMIT=""
+ENV FLASHPAPER_COMMIT=$FLASHPAPER_COMMIT
+
 COPY . /var/www/html
 
 COPY docker/php-fpm.conf /etc/php84/php-fpm.conf
