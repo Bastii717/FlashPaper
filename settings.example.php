@@ -10,6 +10,7 @@
 		'base_url' => '', # https://example.com/flashpaper
 		'max_secret_length' => 3000,
 		'announcement' => '',
+		'commit' => '', # git commit this deployment was built from. shown in the footer when set
 		'prune' => [
 			'enabled' => true,
 			'min_days' => 365,
