@@ -135,13 +135,6 @@
 		s.addEventListener('change', function () { if ( s.value ) { window.location.href = s.value; } });
 	});
 
-	// ---- one-shot forms (reveal): no double submit ----
-	each('form[data-once]', function (f) {
-		f.addEventListener('submit', function () {
-			each('button[type="submit"]', function (b) { b.disabled = true; }, f);
-		});
-	});
-
 	// don't let the back/forward cache bring a typed secret back
 	window.addEventListener('pagehide', function () {
 		var s = document.getElementById('secret');
