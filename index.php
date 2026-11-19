@@ -125,6 +125,10 @@
 	}
 
 	function display_error($exception) {
+		if ( $exception instanceof SecretNotFoundException ) {
+			require_once('html/not_found.php');
+			return;
+		}
 		$error_message = $exception->getMessage();
 		require_once('html/error.php');
 	}
