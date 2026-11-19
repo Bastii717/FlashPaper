@@ -27,17 +27,16 @@
 
 	if ( count($check_results) > 0 ) {
 		include('html/header.php');
-		foreach ($check_results as $issue) { $error_message .= "<li>{$issue}</li>"; }
+		$error_message = '';
+		foreach ($check_results as $issue) { $error_message .= '<li>' . htmlspecialchars($issue) . '</li>'; }
 
 		echo <<<EOS
-		<div style='padding-top: 1%' class='container'>
-			<div class='alert alert-danger'>
-				<h4 class='alert-heading'>FlashPaper Configuration Issues</h4>
-				<p>The following issues are preventing FlashPaper from loading.</p>
-				<hr>
-				<ul>{$error_message}</ul>
-			</div>
-		</div>
+			<section class="narrow">
+				<span class="label">// error</span>
+				<h1>FlashPaper can't start</h1>
+				<p class="sub">These configuration issues are preventing FlashPaper from loading:</p>
+				<ul class="list">{$error_message}</ul>
+			</section>
 
 EOS;
 		include('html/footer.php');
