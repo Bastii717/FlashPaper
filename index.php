@@ -25,6 +25,7 @@
 		} catch (Exception $e) { display_error($e); }
 
 	} elseif (!empty($_POST['k'])) {
+		prune_expired($settings); # clean up expired secrets (if enabled)
 		try {
 			display_secret(); # user confirmed viewing the secret
 		} catch (Exception $e) { display_error($e); }
@@ -35,14 +36,7 @@
 		} catch (Exception $e) { display_error($e); }
 
 	} else {
-		if ($settings['prune']['enabled']) {
-			# clean up pruned secrets (if enabled)
-			# don't throw exceptions to user, since this should be transparent to them
-			try {
-				$db = connect();
-				secretCleanup($db);
-			} catch (Exception $e) { }
-		}
+		prune_expired($settings); # clean up expired secrets (if enabled)
 
 		try {
 			display_form(); # display main page
@@ -71,7 +65,7 @@
 	function display_secret() {
 		global $settings;
 
-		$secret = retrieve_secret($_POST['k']);
+		$secret = retrieve_secret($_POST['k'], $settings);
 		$message = htmlentities($secret);
 		require_once('html/view_secret.php');
 	}
