@@ -1,6 +1,6 @@
-data/*.sqlite
-data/*.key
-stage-*
+data/*
+!data/.htaccess
+!data/index.php
 settings.php
 docs/
 mockups/
