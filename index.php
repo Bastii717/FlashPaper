@@ -33,6 +33,8 @@
 	} elseif (isset($_POST['submit']) && !empty($_POST['secret'])) {
 		try {
 			display_secret_code(false); # secret submitted. display url/code
+		} catch (SecretTooLongException $e) {
+			display_form($_POST['secret'], true); # back to the form, text kept
 		} catch (Exception $e) { display_error($e); }
 
 	} else {
@@ -45,11 +47,14 @@
 
 	require_once('html/footer.php'); # display footer
 
-	function display_form() {
+	# $refill: the sender's own text, echoed back after a rejected submit
+	function display_form($refill = null, $too_long = false) {
 		global $settings;
 
 		$template_text = '';
-		if ( !empty($_GET['t']) ) {
+		if ( $refill !== null ) {
+			$template_text = $refill;
+		} elseif ( !empty($_GET['t']) ) {
 			$safe_path = 'templates/' . basename($_GET['t']) . '.txt';
 			if ( file_exists($safe_path) ) { $template_text = file_get_contents($safe_path); }
 		}
@@ -76,7 +81,7 @@
 		# verify secret length isnt too long
 		# newlines are always \r\n, so replace with \n so the strlen count is accurate
 		if ( strlen(str_replace("\r\n", "\n", $_POST['secret'])) > $settings['max_secret_length'] ) {
-			throw new exception($settings['messages']['error_secret_too_long']);
+			throw new SecretTooLongException(too_long_message($settings));
 		}
 
 		$message = store_secret($_POST['secret'], $settings);
@@ -90,6 +95,11 @@
 		}
 
 		require_once('html/view_code.php');
+	}
+
+	# {max} in the message is replaced with the configured limit
+	function too_long_message($settings) {
+		return str_replace('{max}', (string)$settings['max_secret_length'], $settings['messages']['error_secret_too_long']);
 	}
 
 	function build_url($k) {

@@ -2,6 +2,12 @@
 
 	defined('_DIRECT_ACCESS_CHECK') or exit();
 
+	# not found, already read, expired, wrong key: one exception, one message,
+	# so the cases stay indistinguishable for whoever holds the link
+	class SecretNotFoundException extends Exception {}
+
+	class SecretTooLongException extends Exception {}
+
 	function encrypt_decrypt($encrypt, $key, $iv, $string) {
 		if ( $encrypt == true ) {
 			$encText = openssl_encrypt($string, 'AES-256-CBC', $key, 0, $iv);
