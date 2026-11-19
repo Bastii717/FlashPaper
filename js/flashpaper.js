@@ -52,13 +52,18 @@
 		sel.addRange(range);
 	}
 
+	// clipboard API first, the old execCommand as fallback. if both fail, the
+	// text stays selected so it can be copied by hand
 	function copy(el) {
 		var text = (el.value !== undefined) ? el.value : el.textContent;
+		var legacy = function () {
+			selectContents(el);
+			return document.execCommand('copy') ? Promise.resolve() : Promise.reject();
+		};
 		if ( navigator.clipboard && window.isSecureContext ) {
-			return navigator.clipboard.writeText(text);
+			return navigator.clipboard.writeText(text).catch(legacy);
 		}
-		selectContents(el);
-		return document.execCommand('copy') ? Promise.resolve() : Promise.reject();
+		return legacy();
 	}
 
 	function flash(button) {
