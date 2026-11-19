@@ -17,20 +17,20 @@
 			'max_days' => 730
 		],
 		'messages' => [
-			'error_secret_too_long' => 'Input length too long',
+			'error_secret_too_long' => 'Too long: max {max} characters.',
 
-			'submit_secret_header' => 'Create A Self-Destructing Message',
-			'submit_secret_subheader' => '',
-			'submit_secret_button' => 'Encrypt Message',
+			'submit_secret_header' => 'New one-time secret',
+			'submit_secret_subheader' => 'Paste it, get a link. The link works once, then the secret is deleted.',
+			'submit_secret_button' => 'Create link',
 
-			'view_code_header' => 'Self-Destructing URL',
-			'view_code_subheader' => 'Share this URL via email, chat, or another messaging service. It will self-destruct after being viewed once.',
+			'view_code_header' => 'Link ready',
+			'view_code_subheader' => 'Send it to one person. The first time it\'s opened, the secret is deleted from the server.',
 
-			'confirm_view_secret_header' => 'View this secret?',
-			'confirm_view_secret_button' => 'View Secret',
+			'confirm_view_secret_header' => 'Open secret?',
+			'confirm_view_secret_button' => 'Reveal secret',
 
-			'view_secret_header' => 'Self-Destructing Message',
-			'view_secret_subheader' => 'This message has been destroyed',
+			'view_secret_header' => 'Your secret',
+			'view_secret_subheader' => 'Deleted from the server. This page is the only copy left.',
 		]
 	];
 ?>

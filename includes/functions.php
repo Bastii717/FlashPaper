@@ -2,6 +2,12 @@
 
 	defined('_DIRECT_ACCESS_CHECK') or exit();
 
+	# not found, already read, expired, wrong key: one exception, one message,
+	# so the cases stay indistinguishable for whoever holds the link
+	class SecretNotFoundException extends Exception {}
+
+	class SecretTooLongException extends Exception {}
+
 	function encrypt_decrypt($encrypt, $key, $iv, $string) {
 		if ( $encrypt == true ) {
 			$encText = openssl_encrypt($string, 'AES-256-CBC', $key, 0, $iv);
@@ -199,7 +205,7 @@
 
 		#validate length of k - must be 40 chars (id = 8, key = 32)
 		if ( strlen($k) != 40 ) {
-			throw new Exception('This secret can not be found!');
+			throw new SecretNotFoundException('This secret can not be found!');
 		}
 
 		#extract key and id from k
@@ -208,7 +214,7 @@
 
 		#validate id before using in db lookup
 		if ( preg_match('/[a-z0-9]{8}/i', $id) !== 1 ) {
-			throw new Exception('This secret can not be found!');
+			throw new SecretNotFoundException('This secret can not be found!');
 		}
 
 		#look up secret by id
@@ -216,7 +222,7 @@
 
 		#throw exception if query failed
 		if ( ! $secretQuery ) {
-			throw new Exception('This secret can not be found!');
+			throw new SecretNotFoundException('This secret can not be found!');
 		}
 
 		$iv = $secretQuery['iv'];
@@ -225,7 +231,16 @@
 
 		#verify hash from DB equals hash of id + key from URL
 		if ( ! password_verify($id . $key, $hash) ) {
-			throw new Exception('This secret can not be found!');
+			throw new SecretNotFoundException('This secret can not be found!');
+		}
+
+		#an expired secret is gone, even if the cleanup hasn't run yet. same
+		#message as above so expired stays indistinguishable from already read
+		if ( $settings['prune']['enabled']
+			&& is_numeric($secretQuery['prune_epoch'])
+			&& (int)$secretQuery['prune_epoch'] < time() ) {
+			deleteSecret($db, $id);
+			throw new SecretNotFoundException('This secret can not be found!');
 		}
 
 		#an expired secret is gone, even if the cleanup hasn't run yet. same
@@ -240,7 +255,7 @@
 		#claim the secret by deleting it before decrypting. only the request
 		#that deleted the row may reveal it
 		if ( ! deleteSecret($db, $id) ) {
-			throw new Exception('This secret can not be found!');
+			throw new SecretNotFoundException('This secret can not be found!');
 		}
 
 		#decrypt secret with the static key, and then with url key

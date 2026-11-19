@@ -112,8 +112,8 @@ $ curl -s -X POST -d "secret=my secret&json=true" https://secret.bcdc.app
 FlashPaper will try to generate the secret retrieval URL based on information provided by the upstream webserver. This process isn't always 100% accurate. If the secret retrieval URL that FlashPaper creates isn't correct for your setup (this usually happens when you're using a reverse proxy upstream), you can manually specify the URL that FlashPaper will use. For example: A `base_url` of "https://secret.bcdc.app" will result in retrieval URLs like "https://secret.bcdc.app/?k=xxxxxxxxxxxxx".
 
 ### `display_logo`:
- - `true`: The logo set in `site_logo` (either a file path or a URL) will be displayed at the top of the page. If `site_logo` isn't set, the default FlashPaper logo at `img/logo.svg` will be displayed
- - `false`: No logo will be displayed on your FlashPaper instance
+ - `true`: The `flashpaper` wordmark is shown at the top of the page. If `site_logo` points to your own image (a path on this server; the default Content-Security-Policy blocks images from other hosts), that image replaces the wordmark. The default value `img/logo.svg` keeps the wordmark
+ - `false`: Neither logo nor wordmark is shown
 
 ### `display_title`:
  - `true`: The setting `site_title` will be displayed at the top of the page. If `display_logo` is enabled, the text will appear to the right of the logo.
