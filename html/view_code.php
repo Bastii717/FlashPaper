@@ -1,11 +1,21 @@
 <?php defined('_DIRECT_ACCESS_CHECK') or exit(); ?>
-		<div id="form-div">
-			<fieldset>
-				<h1 class="fp-title"><?php echo $settings['messages']['view_code_header'] ?></h1>
-				<p class="fp-subtitle"><?php echo $settings['messages']['view_code_subheader'] ?></p>
-				<input type="text" readonly id="copy" class="form-control" value="<?php echo htmlspecialchars($message, ENT_QUOTES) ?>"/>
-				<div class="fp-actions">
-					<button class="btn btn-primary" type="button" onclick="copyText()">Copy</button>
+			<section>
+				<div class="prompt"><span class="u"><?php echo fp_host($settings) ?></span>:~$ <span class="cmd">flashpaper new</span></div>
+				<h1><?php echo $settings['messages']['view_code_header'] ?></h1>
+<?php if ( $settings['messages']['view_code_subheader'] != '' ) { ?>
+				<p class="sub"><?php echo $settings['messages']['view_code_subheader'] ?></p>
+<?php } ?>
+				<div class="field">
+					<input type="text" id="link" readonly value="<?php echo htmlspecialchars($message, ENT_QUOTES) ?>" aria-label="One-time link" spellcheck="false">
+					<button class="btn-p" type="button" data-copy="#link" data-done="✓ Copied">Copy link</button>
 				</div>
-			</fieldset>
-		</div>
+				<div class="list">
+					<span class="label">// before you send it</span>
+					<ul>
+						<li><b>Don't open it yourself</b> — that uses it up.</li>
+						<li>Send the context (whose login, which system) through a different channel than the link.</li>
+						<li>If the recipient gets "not found", someone else may have opened it first.</li>
+					</ul>
+				</div>
+				<div class="btns"><a class="btn-s" href="./">New secret</a></div>
+			</section>

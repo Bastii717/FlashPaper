@@ -17,20 +17,20 @@
 			'max_days' => (int)(getenv('PRUNE_MAX_DAYS') ?: 730),
 		],
 		"messages" => [
-			"error_secret_too_long" => getenv('MESSAGES_ERROR_SECRET_TOO_LONG') ?: "Input length too long",
+			"error_secret_too_long" => getenv('MESSAGES_ERROR_SECRET_TOO_LONG') ?: "Too long: max {max} characters.",
 
-			"submit_secret_header" => getenv('MESSAGES_SUBMIT_SECRET_HEADER') ?: "Create A Self-Destructing Message",
-			"submit_secret_subheader" => getenv('MESSAGES_SUBMIT_SECRET_SUBHEADER') ?: "",
-			"submit_secret_button" => getenv('MESSAGES_SUBMIT_SECRET_BUTTON') ?: "Encrypt Message",
+			"submit_secret_header" => getenv('MESSAGES_SUBMIT_SECRET_HEADER') ?: "New one-time secret",
+			"submit_secret_subheader" => getenv('MESSAGES_SUBMIT_SECRET_SUBHEADER') ?: "Paste it, get a link. The link works once, then the secret is deleted.",
+			"submit_secret_button" => getenv('MESSAGES_SUBMIT_SECRET_BUTTON') ?: "Create link",
 
-			"view_code_header" => getenv('MESSAGES_VIEW_CODE_HEADER') ?: "Self-Destructing URL",
-			"view_code_subheader" => getenv('MESSAGES_VIEW_CODE_SUBHEADER') ?: "Share this URL via email, chat, or another messaging service. It will self-destruct after being viewed once.",
+			"view_code_header" => getenv('MESSAGES_VIEW_CODE_HEADER') ?: "Link ready",
+			"view_code_subheader" => getenv('MESSAGES_VIEW_CODE_SUBHEADER') ?: "Send it to one person. The first time it's opened, the secret is deleted from the server.",
 
-			"confirm_view_secret_header" => getenv('MESSAGES_CONFIRM_VIEW_SECRET_HEADER') ?: "View this secret?",
-			"confirm_view_secret_button" => getenv('MESSAGES_CONFIRM_VIEW_SECRET_BUTTON') ?: "View Secret",
+			"confirm_view_secret_header" => getenv('MESSAGES_CONFIRM_VIEW_SECRET_HEADER') ?: "Open secret?",
+			"confirm_view_secret_button" => getenv('MESSAGES_CONFIRM_VIEW_SECRET_BUTTON') ?: "Reveal secret",
 
-			"view_secret_header" => getenv('MESSAGES_VIEW_SECRET_HEADER') ?: "Self-Destructing Message",
-			"view_secret_subheader" => getenv('MESSAGES_VIEW_SECRET_SUBHEADER') ?: "This message has been destroyed",
+			"view_secret_header" => getenv('MESSAGES_VIEW_SECRET_HEADER') ?: "Your secret",
+			"view_secret_subheader" => getenv('MESSAGES_VIEW_SECRET_SUBHEADER') ?: "Deleted from the server. This page is the only copy left.",
 		]
 	];
 ?>

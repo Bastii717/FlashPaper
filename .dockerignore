@@ -6,3 +6,6 @@ settings.example.php
 docker-compose.yml
 \.*
 data/*
+mockups/
+docs/
+tmp/
