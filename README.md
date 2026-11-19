@@ -105,7 +105,7 @@ $ curl -s -X POST -d "secret=my secret&json=true" https://secret.bcdc.app
 ## Settings
 
 ### `prune`:
- - `enabled`: Turn on/off auto-pruning of old secrets from the database upon page load
+ - `enabled`: Turn on/off expiry of old secrets. When enabled, a secret past its prune date can no longer be opened, and expired secrets are deleted from the database whenever the main page is loaded or a secret is opened
  - `min_days`/`max_days`: When a secret is submitted, a random date/time is generated between `min_days` and `max_days` in the future. After that date/time has elapsed, the secret will be pruned from the database if `enabled` is set to `true`. This is to prevent your database from being filled with secrets that are never retrieved. NOTE: Even if `enabled` is set to `false`, the prune value will still be generated and stored in the database, but secrets will not be pruned unless `enabled` is switched to `true`.
 
 ### `base_url`:

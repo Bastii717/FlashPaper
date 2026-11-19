@@ -140,6 +140,15 @@
 		}
 	}
 
+	function prune_expired($settings) {
+		if ( ! $settings['prune']['enabled'] ) { return; }
+
+		# don't throw exceptions to user, since this should be transparent to them
+		try {
+			secretCleanup(connect());
+		} catch (Exception $e) { }
+	}
+
 	function crypto_rand_string($strLen) {
 		# random_int() generates cryptographically secure pseudo-random integers
 		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -183,7 +192,7 @@
 		return $k;
 	}
 
-	function retrieve_secret($k) {
+	function retrieve_secret($k, $settings) {
 
 		#connect to sqlite db
 		$db = connect();
@@ -216,6 +225,15 @@
 
 		#verify hash from DB equals hash of id + key from URL
 		if ( ! password_verify($id . $key, $hash) ) {
+			throw new Exception('This secret can not be found!');
+		}
+
+		#an expired secret is gone, even if the cleanup hasn't run yet. same
+		#message as above so expired stays indistinguishable from already read
+		if ( $settings['prune']['enabled']
+			&& is_numeric($secretQuery['prune_epoch'])
+			&& (int)$secretQuery['prune_epoch'] < time() ) {
+			deleteSecret($db, $id);
 			throw new Exception('This secret can not be found!');
 		}
 
