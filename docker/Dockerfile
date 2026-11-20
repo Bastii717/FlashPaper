@@ -7,10 +7,12 @@ RUN apk upgrade --no-cache && \
     apk add --no-cache curl nginx php84 php84-fpm php84-opcache php84-pdo php84-pdo_sqlite php84-openssl && \
     mkdir /var/www/html
 
-# PHP2Shell (CVE-2026-109618, CVE-2026-109619): php-fpm RCE fixed in PHP 8.4.27.
+# Minimum PHP with all known security fixes: 8.4.27 covered PHP2Shell
+# (CVE-2026-109618/-109619), 8.4.28 covers the 2026-11-19 fixes incl. the
+# php-fpm request-smuggling and use-after-free advisories.
 # php84 is deliberately not pinned so future Alpine fixes are picked up
 # automatically; this guard only refuses to build a known-vulnerable image.
-RUN php84 -r 'exit(version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 1);'
+RUN php84 -r 'exit(version_compare(PHP_VERSION, "8.4.28", ">=") ? 0 : 1);'
 
 # commit the image was built from, passed by the publishing workflow and
 # shown in the page footer. empty for local builds without the build-arg
